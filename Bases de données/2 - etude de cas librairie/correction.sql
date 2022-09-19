@@ -331,7 +331,30 @@ and depot.nomdep="LYON2"
 and stocker.numouvr=6
 
 #24.	Supprimer tous les ouvrages de chez Vuibert de la table OUVRAGE.
+delete from ecrire 
+where numouvr in (select numouvr 
+					from ouvrage 
+                    where nomed= 'vuibert');
+
+delete from stocker 
+where numouvr in (select numouvr 
+					from ouvrage 
+                    where nomed= 'vuibert');
+                    
+delete from tarifer 
+where numouvr in (select numouvr 
+					from ouvrage 
+                    where nomed= 'vuibert');
+
+delete from ouvrage where nomed= 'vuibert';
+
+#25.	créer une table contenant les éditeurs 
+#situés à Paris et leur n° de tel.
+
+create table edParis
+select nomed, teled 
+from editeur 
+where villeed = 'paris';
 
 
-
-#25.	créer une table contenant les éditeurs situés à Paris et leur n° de tel.
+select * from edParis;
