@@ -59,3 +59,5 @@ create table evaluation
  alter table evaluation add constraint fk_evaluation_appreciation foreign key (appreciation_id) references appreciation(id);
  
  drop table etudiants;
+ 
+ 
