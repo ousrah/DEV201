@@ -359,7 +359,70 @@ drop function if exists somme;
     end $$
     delimiter ;
       select somme(5)  ;
-      
+ 
+#factoriel
+ 
+drop function if exists factoriel;
+delimiter $$
+create function factoriel(n int)
+    returns bigint
+    deterministic
+begin
+		declare i int default 1;
+        declare result bigint default 1;
+        repeat
+			set result=result*i;
+            set i=i+1;
+        until i>n end repeat;
+		return result;
+end $$
+delimiter ;
+select factoriel(0)  ;
+    
+#fonction recursive
+
+
+ drop function if exists factoriel;
+    delimiter $$
+    create function factoriel(n int)
+    returns bigint
+    deterministic
+    begin
+        declare result bigint default 1;
+		if (n>2) then 
+			set result = n * factoriel(n-1);
+        end if;
+		return result;
+    end $$
+    delimiter ;
+
+   select factoriel(5)  ;
+    
+    #procedure recursive
+
+ drop procedure if exists ps_factoriel;
+    delimiter $$
+    create procedure ps_factoriel(inout n bigint)
+    begin
+        declare result bigint default 1;
+        declare x bigint default 1;
+		if n>2 then
+            set x=n-1;
+		    call ps_factoriel(x);
+		end if;
+		set n =  n*x;
+    end $$
+    delimiter ;
+    
+    set max_sp_recursion_depth = 10;
+    
+    
+    
+    set @n = 5;
+	call ps_factoriel(@n)  ;
+    select @n;  
+    
+    #loop
 
 
 #les fonctions
