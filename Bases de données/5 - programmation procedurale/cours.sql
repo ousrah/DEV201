@@ -365,11 +365,15 @@ drop function if exists somme;
 drop function if exists factoriel;
 delimiter $$
 create function factoriel(n int)
-    returns bigint
+    returns varchar(50)
     deterministic
 begin
 		declare i int default 1;
-        declare result bigint default 1;
+        declare result bigint default 1;	
+		if n<0 then
+			return "impossible";
+		end if;
+
         repeat
 			set result=result*i;
             set i=i+1;
@@ -397,6 +401,31 @@ select factoriel(0)  ;
     delimiter ;
 
    select factoriel(5)  ;
+
+
+
+
+
+drop procedure if exists ps_somme;
+
+delimiter $$
+create procedure ps_somme(in a int, in b int, out s int, out m int)
+begin
+	#set s=a+b;
+	select a + b into s;
+    select a * b into m;
+    
+end$$
+delimiter ;
+
+set @s=0;
+set @m=0;
+call  ps_somme(3,5, @s,@m);
+select @s;
+select @m;
+
+
+
     
     #procedure recursive
 
@@ -413,17 +442,84 @@ select factoriel(0)  ;
 		set n =  n*x;
     end $$
     delimiter ;
+   
+    set max_sp_recursion_depth = 20;
     
-    set max_sp_recursion_depth = 10;
-    
-    
-    
-    set @n = 5;
+    set @n = 13;
 	call ps_factoriel(@n)  ;
     select @n;  
     
     #loop
 
+
+select date_format(current_date(), "%D of %M of %Y");
+
+
+select abs(datediff("2022/12/31 23:59:59", current_date));
+
+select abs(timestampdiff(hour, "2022/12/31 23:59:59", current_date));
+
+
+set @d1 = "2022/12/31 23:59:59";
+set @d2 = current_date;
+select timestampdiff(hour,@d2, @d1);
+use notes;
+drop procedure if exists somme;
+delimiter $$
+create procedure somme(in a int, in b int , out c int, out m int)
+begin
+	set c = a+b;
+    set m=a*b;
+end$$
+delimiter ;
+
+set @vs_a = 5;
+set @vs_b = 3;
+
+call somme(@vs_a,@vs_b,@vs_c, @vs_m);
+select @vs_a, @vs_b,@vs_c, @vs_m;
+
+
+select count(*) from stagiaire;
+
+drop function if exists get_nb_stag;
+delimiter $$
+create function get_nb_stag()
+returns int
+no sql
+begin
+	declare nb int;
+ 	select count(*) into nb from stagiaire;
+    
+    #set nb = (select count(*) from stagiaire);
+	return nb;
+end$$
+
+delimiter ;
+
+select get_nb_stag();
+
+
+
+drop function if exists get_stats;
+delimiter $$
+create function get_stats()
+returns varchar(50)
+no sql
+begin
+	declare nb int;
+    declare moy float;
+	select count(*) into nb from stagiaire;
+    select avg(note) into moy from evaluation;
+ 	return concat(nb,";",moy);
+end$$
+delimiter ;
+
+select get_stats() into @r;
+select substring_index(@r,";",1) into @nb;
+select substring_index(@r,";",-1) into @moy;
+select @nb;
+select @moy;
 
 #les fonctions
 
