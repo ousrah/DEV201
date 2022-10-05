@@ -106,6 +106,39 @@ use vols2018;
 
 
 
-select * from vol
+
+create database employes COLLATE "utf8_general_ci";
+use employes;
+
+
+create table DEPARTEMENT (
+ID_DEP int auto_increment primary key, 
+NOM_DEP varchar(50), 
+Ville varchar(50));
+
+create table EMPLOYE (
+ID_EMP int auto_increment primary key, 
+NOM_EMP varchar(50), 
+PRENOM_EMP varchar(50), 
+DATE_NAIS_EMP date, 
+SALAIRE float,
+ID_DEP int ,
+constraint fkEmployeDepartement foreign key (ID_DEP) references DEPARTEMENT(ID_DEP));
+
+insert into DEPARTEMENT (nom_dep, ville) values ('FINANCIER','Tanger'),
+('Informatique','Tétouan'),
+('Marketing','Martil'),
+('GRH','Mdiq');
+
+insert into EMPLOYE (NOM_EMP , PRENOM_EMP , DATE_NAIS_EMP , SALAIRE ,ID_DEP ) values 
+('said','said','1990/1/1',8000,1),
+('hassan','hassan','1990/1/1',8500,1),
+('khalid','khalid','1990/1/1',7000,2),
+('souad','souad','1990/1/1',6500,2),
+('Farida','Farida','1990/1/1',5000,3),
+('Amal','Amal','1990/1/1',6000,4),
+('Mohamed','Mohamed','1990/1/1',7000,4);
+
+select * from employe
 
 
