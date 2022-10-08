@@ -1,12 +1,17 @@
-#les exception;
+#les exceptions;
+
 use notes;
 drop table if exists test ;
 create table test (id int auto_increment primary key, nom varchar(50) not null unique);
 
+
+insert into test (nom) values ('iam'); 
+insert into test (nom) values ('meditel'); 
+insert into test (nom) values ('meditel'); 
 insert into test (nom) values (null); 
 
 
-#test avec numero d'erreur
+
 
 drop procedure if exists insert_test;
 delimiter $$
@@ -15,18 +20,46 @@ begin
 	declare sortie boolean default true;
 	begin
 		declare exit handler for 1062  set sortie = false;	
- 	#	declare exit handler for 1048  set sortie = false;	
+ 		declare exit handler for 1048  set sortie = false;	
  
 		insert into test (nom) values (v_name); 
         select " client ajouté avec succès";
 	end;
-    if sortie=false then
-		select "erreur d'insertion, vérifier la valeur de nom" as err;
+    if sortie= false then
+
+			select "erreur d'insertion " as err;
     end if;
 end$$
 delimiter ;
 select * from test;
-call insert_test('wana');
+call insert_test(null);
+
+
+#test avec numero d'erreur
+
+drop procedure if exists insert_test;
+delimiter $$
+create procedure insert_test(v_name varchar(50))
+begin
+	declare sortie int default 0;
+	begin
+		declare exit handler for 1062  set sortie = 1;	
+ 		declare exit handler for 1048  set sortie = 2;	
+ 
+		insert into test (nom) values (v_name); 
+        select " client ajouté avec succès";
+	end;
+    if sortie!=0 then
+    case sortie
+		when 1 then 	select "erreur de doublon" as err;
+		when 2 then 	select "impossible d'inserer un client avec un nom null" as err;
+		
+    end case;
+    end if;
+end$$
+delimiter ;
+select * from test;
+call insert_test(null);
 
 
 
@@ -42,17 +75,18 @@ begin
         insert into test (nom) values (v_name); 
         select " client ajouté avec succès";
 	end;
+    
     if sortie=false then
-		select "erreur de doublons" as err;
+		select "erreur d'insertion" as err;
     end if;
 end$$
 delimiter ;
 
-call insert_test("test");
+call insert_test(null);
 
 
-	select nom into @v from test where nom like 'wana';
-  select @v
+	select nom into @v from test where nom like 'ismo';
+  select @v;
 
 #test avec not found
 
@@ -73,7 +107,7 @@ begin
 end$$
 delimiter ;
 
-call select_test("ofppt");
+call select_test("ismo");
 
 
 #appel d'une procedure en cas d'erreur
@@ -84,6 +118,20 @@ BEGIN
 	SELECT 'Une autre erreur est survenue' ;
 END$$
 DELIMITER ;
+
+drop procedure if exists select_test;
+delimiter $$
+create procedure select_test(v_name varchar(50))
+begin 
+	declare var1 varchar(50);
+    declare exit handler for  sqlexception call ps_err();
+    INSERT INTO table_inexistante VALUES (1);
+end$$
+delimiter ;
+
+call select_test("ismo");
+
+
 
 drop procedure if exists select_test;
 delimiter $$
@@ -105,7 +153,7 @@ begin
 end$$
 delimiter ;
 
-call select_test("wana");
+call select_test("ismo");
 
 
 
