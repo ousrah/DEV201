@@ -50,11 +50,13 @@ begin
         select " client ajouté avec succès";
 	end;
     if sortie!=0 then
-    case sortie
-		when 1 then 	select "erreur de doublon" as err;
-		when 2 then 	select "impossible d'inserer un client avec un nom null" as err;
-		
-    end case;
+		case sortie
+			when 1 then 	
+            begin
+				select "erreur de doublon" as err;
+            end;
+			when 2 then 	select "impossible d'inserer un client avec un nom null" as err;
+		end case;
     end if;
 end$$
 delimiter ;
@@ -167,11 +169,10 @@ begin
 	declare var1 varchar(50);
     declare sortie boolean default  true; 
     declare exit handler for  sqlexception 
-    BEGIN
-		SELECT 'Une autre erreur est survenue' ;
-		SELECT 'blabla' ;
-	END;
-
+						BEGIN
+							SELECT 'Une autre erreur est survenue' ;
+							SELECT 'blabla' ;
+						END;
     begin
 		declare exit handler for  not found set sortie=false;
         INSERT INTO table_inexistante VALUES (1);
@@ -245,8 +246,8 @@ begin
     declare sortie boolean default  true; 
      begin
 		declare continue handler for sqlstate'23000' set sortie=false;
-		insert into test (id, nom) values (5,'test1');
-        insert into test (id, nom) values (6,'test2');
+		insert into test (id, nom) values (4,'test1');
+        insert into test (id, nom) values (16,'test4');
         insert into test (id, nom) values (14,'test3');
 	end;
     if sortie=false then
@@ -269,8 +270,7 @@ create procedure insert_duplicate_test()
 begin 
     declare sortie boolean default  true; 
      begin
-       DECLARE nom_exception CONDITION FOR SQLSTATE VALUE '23000';
-        
+        DECLARE nom_exception CONDITION FOR SQLSTATE VALUE '23000';
     	declare continue handler for nom_exception set sortie=false;
 		insert into test (id, nom) values (1,'test1');
         insert into test (id, nom) values (2,'test2');
@@ -288,20 +288,30 @@ call insert_duplicate_test();
 
 #utilisation de SIGNAL
 
+drop procedure if exists division;
+delimiter $$
+create procedure division(a int, b int)
+begin 
+  if b=0 then
+		signal SQLSTATE '23000' SET MESSAGE_TEXT = 'impossible de divisé par zero';
+   end if;
+   select a/b;
+end$$
+delimiter ;
+call division (2,0)
 
 drop procedure if exists insert_test;
 delimiter $$
 create procedure insert_test(v_id int, v_name varchar(50))
 begin 
    if v_id=0 then
-		signal SQLSTATE '45000' SET MESSAGE_TEXT = 'id non autorisé';
- 
+		signal SQLSTATE '23000' SET MESSAGE_TEXT = 'id non autorisé';
    end if;
 	
 end$$
 delimiter ;
 
-call insert_test(4,'a');
+call insert_test(0,'a');
 
 select 5/0;
 
@@ -329,28 +339,32 @@ select @r;
 drop table  if exists bankaccounts;
 
 
-CREATE TABLE bankaccounts(accountno varchar(20) PRIMARY KEY NOT NULL, funds decimal(8,2), check (funds>0));
-
+CREATE TABLE bankaccounts(accountno varchar(20) PRIMARY KEY NOT NULL, funds decimal(8,2), check (funds>=0));
 
 INSERT INTO bankaccounts VALUES("ACC1", 1000);
 INSERT INTO bankaccounts VALUES("ACC2", 1000);
 
+UPDATE bankaccounts SET funds=funds+200 WHERE accountno="acc1"; 
+UPDATE bankaccounts SET funds=funds-200 WHERE accountno="acc2"; 
+
+
+select * from bankaccounts
 
 
 DROP PROCEDURE IF EXISTS virement;
 delimiter $$
-CREATE PROCEDURE virement(acc1 varchar(100), acc2 varchar(10), amount float)
+CREATE PROCEDURE virement(acc1 varchar(10), acc2 varchar(10), amount float)
 BEGIN
    DECLARE exit handler for SQLEXCEPTION
    BEGIN
         GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
             @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
         ROLLBACK;
-        set autocommit=1;
+      --  set autocommit=1;
         SET @full_error = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
         SELECT @full_error;
    END;
- set autocommit=0;
+-- set autocommit=0;
 start transaction ;     
 UPDATE bankaccounts SET funds=funds+amount WHERE accountno=acc2; 
 UPDATE bankaccounts SET funds=funds-amount WHERE accountno=acc1; 
@@ -359,7 +373,7 @@ commit;
 end$$
 delimiter ;
 
-call virement('acc1','acc2',100);
+call virement('acc1','acc2',300);
 
 SHOW VARIABLES LIKE 'AUTOCOMMIT';
 select * from bankaccounts;
