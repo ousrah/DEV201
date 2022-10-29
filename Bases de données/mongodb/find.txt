@@ -1,0 +1,209 @@
+
+
+C:\Users\ousra\AppData\Local\Programs\mongosh
+
+teletecharger la version community msi
+		installation du deamon  mongod
+		installatin du compass
+
+
+teletercharger mongosh dans tools version windows msi
+		installation du shell
+
+
+ajout des variables d'environnement
+pour 
+C:\Program Files\MongoDB\Server\6.0\bin
+C:\Users\ousra\AppData\Local\Programs\mongosh
+
+
+mongos --version
+mongod --version
+
+
+net start mongodb
+net stop mongodb
+
+
+mongodb://localhost:27017
+
+mongodb://m121:aggregations@cluster0-shard-00-00-jxeqq.mongodb.net:27017,cluster0-shard-00-01-jxeqq.mongodb.net:27017,cluster0-shard-00-02-jxeqq.mongodb.net:27017/aggregations?replicaSet=Cluster0-shard-0&authSource=admin&ssl=true
+
+		database : agregations
+		collection: movies
+
+
+pip install pymongo
+
+
+[{"prenom":"Ahmed","niveau":"1A","filiere":"Dev digital"},
+{"_id":1234,"prenom":"Alaa","niveau":"2A","filiere":"Dev digital"}]
+
+
+
+
+db.movies.find({"title":{$regex:"Kate"}},{"_id":1,"title":1})
+
+Collection restaurants
+--
+Interrogation (selection)
+----------------------
+
+db.restaurants.find( { "borough" : "Brooklyn" } )
+
+db.restaurants.find( { "borough" : "Brooklyn" } ).count()
+
+db.restaurants.find(
+    { "borough" : "Brooklyn",
+      "cuisine" : "Italian" }
+)
+
+db.restaurants.find(
+    { "borough" : "Brooklyn",
+      "cuisine" : "Italian",
+      "address.street" : "5 Avenue" }
+)
+
+db.restaurants.find(
+    { "borough" : "Brooklyn",
+      "cuisine" : "Italian",
+      "address.street" : "5 Avenue",
+      "name" : /pizza/i }
+)
+
+
+Projection
+-------------------
+db.getCollection('restaurants').find(
+    {"borough":"Brooklyn",
+     "cuisine":"Italian",
+     "name":/pizza/i,
+     "address.street" : "5 Avenue"},
+    {"name":1}
+)
+
+regex
+--------------------
+db.getCollection('restaurants').find(
+    {"borough":"Brooklyn",
+     "cuisine":"Italian",
+     "name":/pizza/i,
+     "address.street" : "5 Avenue"},
+    {"name" : 1,
+     "grades.score" : 1}
+)
+
+opérateurs
+---------------
+db.getCollection('restaurants').find(
+    {"borough":"Manhattan",
+     "grades.score":{$lt : 10}
+    },
+    {"name":1,"grades.score":1, "_id":0})
+
+
+db.getCollection('restaurants').find(
+    {"borough":"Manhattan",
+     "grades.score":{
+         $lt:10,
+         $not:{$gte:10}
+     }
+    },
+    {"name":1,"grades.score":1, "_id":0})
+
+
+db.restaurants.find({
+    "grades.grade" : "C",
+    "grades.score" : {$lt : 40}
+   },
+   {"Grades.grade":1, "grades.score":1}    -- problèmes Grades G maj
+);
+db.restaurants.find({
+    "grades.grade" : "C",
+    "grades.score" : {$lt : 40}
+   },
+   {"grades.grade":1, "grades.score":1}   
+);
+
+db.restaurants.find({
+    "grades" : {
+           $elemMatch : {
+               "grade" : "C",
+               "score" : {$lt :40}
+           }
+    }
+  },
+  {"grades.grade" : 1,"grades.score" : 1}
+);
+
+
+db.restaurants.find({
+    "grades.0.grade":"C"
+  },
+  {"name":1, "borough":1, "_id":0}
+);
+
+
+db.restaurants.distinct("borough")
+
+db.restaurants.distinct("grades.grade");
+
+aggregation
+----------------
+
+db.restaurants.aggregate( [
+    { $match : {
+        "grades.0.grade":"C"
+    }},
+    { $project : {
+        "name":1, "borough":1, "_id":0
+    }}
+] )
+
+
+varMatch = { $match : { "grades.0.grade":"C"} };
+varProject = { $project : {"name":1, "borough":1, "_id":0}};
+db.restaurants.aggregate( [ varMatch, varProject ] );
+
+
+varSort = { $sort : {"name":1} };
+db.restaurants.aggregate( [ varMatch, varProject, varSort ] );
+
+
+varGroup = { $group : {"_id" : null, "total" : {$sum : 1} } };
+db.restaurants.aggregate( [ varMatch, varGroup ] );
+
+
+= db.restaurants.count({"grades.0.grade":"C"})
+= db.restaurants.find({"grades.0.grade":"C"}).count()
+
+varGroup2 = { $group : {"_id" : "borough", "total" : {$sum : 1} } };
+db.restaurants.aggregate( [ varMatch, varGroup2 ] );
+
+varGroup2 = { $group : {"_id" : "$borough", "total" : {$sum : 1} } };
+db.restaurants.aggregate( [ varMatch, varGroup2 ] );
+
+varGroup4 = { $group : {"_id" : "$borough", "moyenne" : {$avg : "$grades.score"} } };
+varSort2 = { $sort : { "moyenne" : -1 } }
+db.restaurants.aggregate( [  varGroup4, varSort2 ] );
+
+
+
+varUnwind = {$unwind : "$grades"}
+varGroup4 = { $group : {"_id" : "$borough", "moyenne" : {$avg : "$grades.score"} } };
+varSort2 = { $sort : { "moyenne" : -1 } }
+db.restaurants.aggregate( [ varUnwind, varGroup4, varSort2 ] );
+
+--update
+db.restaurants.update (
+   {"_id" : ObjectId("635bb079ef35c87c8b77ed13")},
+   {$set : {"comment" : "My new comment"}}
+);
+
+
+
+
+
+
+
+

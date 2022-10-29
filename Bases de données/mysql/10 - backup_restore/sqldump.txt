@@ -1,0 +1,14 @@
+--backup
+mysqldump -h localhost -P 3308 -u root -p ecole > d:\saveecole2.sql
+
+--restore
+mysql  -h localhost -P 3308 -u root -p 
+create database ecole4 collate utf8_general_ci;
+use ecole4;
+source d:\saveecole2.sql;
+
+
+
+--methode 2
+
+mysql  -h localhost -P 3308 -u root -p ecole5 <  d:\saveecole2.sql
