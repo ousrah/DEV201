@@ -1,0 +1,11 @@
+Obtenir les clés du premier enregistrement
+
+    Object.keys(db.maCollection.findOne())
+
+Obtenir les noms des différentes colonnes  de la collection
+
+db.maCollection.aggregate([
+  {"$project":{"arrayofkeyvalue":{"$objectToArray":"$$ROOT"}}},
+  {"$unwind":"$arrayofkeyvalue"},
+  {"$group":{"_id":null,"allkeys":{"$addToSet":"$arrayofkeyvalue.k"}}}
+])
