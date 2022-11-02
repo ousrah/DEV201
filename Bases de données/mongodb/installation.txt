@@ -1,4 +1,4 @@
-mongodb -- service 27012
+mongodb -- service 27017
 mongodbCompass -- interface d'administration
 https://www.mongodb.com/try/download/community
 C:\Program Files\MongoDB\Server\6.0\bin
