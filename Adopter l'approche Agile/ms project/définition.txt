@@ -1,0 +1,3 @@
+définition
+----------
+Un projet est un ensemble d'activités coordonnées et maîtrisées comportant des dates de début et de fin, entrepris dans le but d'atteindre un objectif conforme à des exigences spécifiques.
