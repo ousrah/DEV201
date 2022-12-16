@@ -1,0 +1,60 @@
+Créer un compte sur Jira Cloude
+
+Créer un projet SCRUM-géré par l'entreprise (Gestion des Ressources Humaines)
+
+Les versions : 
+	V1.0.0
+	V1.1.0
+	V1.2.0
+	V1.3.0
+
+Les composantes:
+	Gestion du personnel
+	Gestion des bulletins
+	Gestion des absences
+
+Les epiques
+	Analyse et Design
+	MAJ, Import, Export et impression du personnel
+	Gestion des bulletin
+	Gestion des absences
+
+Créez les taches
+	Analyse du cahier du charge  18
+	création du diagramme de classe 16
+	creation de la base de données 12
+	création des interface graphiques 18
+	Mise en place des menus 8
+
+	Mise a jour du personnel 16
+	Importation exportation du personnel en CSV et JSON 14
+	Génération des impression en PDF 14
+
+	Affectation des heures supplémentaires par mois par personne 12
+	calcules des retenus (imports, cotisation cnss) 12
+	Edition du bulletin 18
+
+	Ajout des absences 12
+	Tableau de bords des absences 18
+	decision des sanctions 16
+
+
+créez un sprint et démarrez le
+
+marquer le sprint comme terminé
+
+visualisez la feuille de route
+
+Ajout le formateur en tant que responsable projet (ousrah@gmail.com)
+
+
+
+
+
+
+
+
+
+
+
+
