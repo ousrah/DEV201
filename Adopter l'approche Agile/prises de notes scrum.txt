@@ -1,0 +1,30 @@
+Version --> release (Livrables)
+      1.0.0
+      1.1.0
+      1.2.0
+
+Modules (Composantes)
+
+
+EPICS se sont des user stories qu'on ne peut pas réaliser en générale dans un seul sprint
+
+
+User Stories (besoins utilisateurs)
+en tant que magazinier
+je doit être capable d'ajouter des produits dans la base de données
+[afin de bien gérer mon stock]
+
+Taches
+
+
+BackLog la liste des user stories a réaliser
+
+Sprint la période de travail à la fin de laquelle il faut livrer (en générale) une version
+ (présenter de la valeur au client)
+
+
+Projet - Gestion commerciale
+
+Composante 1 - Gestion des produits (1.0.0)
+Compostant 2 - Gestion du stock (1.1.0)
+compostant 3 - Gestion de facturation (1.2.0)

@@ -1,0 +1,21 @@
+init
+add
+add .
+add --all
+commit -m
+commit -a -m
+.gitignore
+diff
+status
+log
+log --help
+log --oneline
+log -p fichier
+log -n 2
+checkout
+revert
+reset
+reset --soft
+reset --mixed
+reset --hard
+restore
