@@ -1,21 +1,28 @@
-init
-add
-add .
-add --all
-commit -m
-commit -a -m
+--initiation
+mkdir  pour créer le dossier
+cd
+dir
+git init
+git add fichier.ext
+git add .
+git add --all
+git commit -m "message du commit"
+git commit -a -m "message du commit"
+git log
+git log --oneline
+git log -n 2
+git log --help
+git status
+git diff
 .gitignore
-diff
-status
-log
-log --help
-log --oneline
-log -p fichier
-log -n 2
-checkout
-revert
-reset
-reset --soft
-reset --mixed
-reset --hard
-restore
+
+--historique
+git checkout 8e354b1 -  permet de jeter un coup d'oeil sur le passé
+git checkout master
+git revert 8e354b1  - permet d'inverser l'execution d'un commit
+git revert --continue
+git revert --abord
+git reset 8e354b1 --soft efface l'historique et garde les modifications (staged)
+git reset 8e354b1 --mixed efface l'historique et garde les modifications (unstaged)
+git reset 8e354b1 --hard efface l'historique et efface les modifications (commited)
+restore (permet de faire un reset --hard)
